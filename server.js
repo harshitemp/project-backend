@@ -19,13 +19,13 @@ const app = express();
 app.use(cors({ origin: 'http://localhost:4200' })); // If your Angular app is running on port 4200
 
 // Middleware
-app.use(cors());
 app.use(express.json());
 
 // MongoDB connection
-mongoose.connect('mongodb://localhost:27017/contactFeedbackDB', { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.log(err));
+const uri = 'mongodb+srv://mongodb:mongodb@cluster0.as6af.mongodb.net/contactFeedbackDB?retryWrites=true&w=majority';
+mongoose.connect(uri)
+  .then(() => console.log('MongoDB connected!'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
 // Using imported routes
 app.use('/api', placementRoutes);
@@ -39,7 +39,6 @@ app.use('/api', reminderRoutes);
 app.use('/api', studentRoutes);
 app.use('/api', trainingRoutes);
 app.use('/api', userRoutes);
-
 // Adding the new /api/data routes
 app.get('/api/data', (req, res) => {
   res.json({ message: 'Data from Node.js backend' });
@@ -52,5 +51,5 @@ app.post('/api/data', (req, res) => {
 
 // Listening on port 5000 for all routes
 app.listen(5000, () => {
-    console.log('Server running on port 5000');
+  console.log('Server running on port 5000');
 });
