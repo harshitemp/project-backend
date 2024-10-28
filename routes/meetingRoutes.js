@@ -1,11 +1,11 @@
-// routes/meetingRoutes.js
 const express = require('express');
 const router = express.Router();
 const meetingController = require('../controllers/meetingController');
 
-// Route for scheduling a meeting
-router.get('/meeting', meetingController.getAllMeeting);
+// Route for getting all meetings
+router.get('/meetings', meetingController.getAllMeeting); // Note: Changed to /meetings for consistency
 
-router.post('/meeting', meetingController.scheduleMeeting);
+// Route for scheduling a meeting
+router.post('/meetings', meetingController.scheduleMeeting); // Changed to /meetings for consistency
 
 module.exports = router;

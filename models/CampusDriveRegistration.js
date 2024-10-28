@@ -1,16 +1,16 @@
-// models/CampusDriveRegistration.js
+// models/registrationModel.js
 const mongoose = require('mongoose');
 
-const CampusDriveRegistrationSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    regNumber: { type: String, required: true },
-    stream: { type: String, required: true },
-    mobile: { type: String, required: true },
-    campuses: {
-        vizianagaram: { type: Boolean, default: false },
-        bhubaneswar: { type: Boolean, default: false },
-    },
-    selectedCompanies: [String], // Array to store selected companies
+const CampusDriveSchema = new mongoose.Schema({
+  name: String,
+  regNumber: String,
+  stream: String,
+  mobile: String,
+  email: String,
+  campuses: {
+    vizianagaram: Boolean,
+    bhubaneswar: Boolean
+  }
 });
 
-module.exports = mongoose.model('CampusDriveRegistration', CampusDriveRegistrationSchema);
+module.exports = mongoose.model('Registration', CampusDriveSchema);

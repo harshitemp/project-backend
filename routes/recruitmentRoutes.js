@@ -4,9 +4,9 @@ const router = express.Router();
 const recruitmentController = require('../controllers/recruitmentController');
 
 // Route to get all recruitment data
-router.get('/recuritment', recruitmentController.getAllRecruitments);
+router.get('/recruitment', recruitmentController.getAllRecruitments);
 
 // Route to create new recruitment data
-router.post('/recuritment', recruitmentController.createRecruitment);
+router.post('/recruitment', recruitmentController.createRecruitment);
 
 module.exports = router;

@@ -14,7 +14,11 @@ const reminderRoutes = require('./routes/reminderRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const trainingRoutes = require('./routes/trainingRoutes');
 const userRoutes = require('./routes/userRoutes');
-
+const aboutRoutes = require('./routes/about.routes');
+const footerRoutes = require('./routes/footerRoutes');
+const questionRoutes = require('./routes/questionRoutes');
+const loginr = require('./routes/loginr'); // Ensure this matches the actual filename
+const statisticsRoutes=require('./routes/statisticsRoutes');
 const app = express();
 app.use(cors({ origin: 'http://localhost:4200' })); // If your Angular app is running on port 4200
 
@@ -28,6 +32,7 @@ mongoose.connect(uri)
   .catch(err => console.error('MongoDB connection error:', err));
 
 // Using imported routes
+app.use('/api', aboutRoutes);
 app.use('/api', placementRoutes);
 app.use('/api', campusDriveRoutes);
 app.use('/api', contactRoutes);
@@ -39,6 +44,10 @@ app.use('/api', reminderRoutes);
 app.use('/api', studentRoutes);
 app.use('/api', trainingRoutes);
 app.use('/api', userRoutes);
+app.use('/api', footerRoutes);
+app.use('/api', questionRoutes);
+app.use('/api', loginr); // Use the correct variable name here
+app.use('/api', statisticsRoutes);
 // Adding the new /api/data routes
 app.get('/api/data', (req, res) => {
   res.json({ message: 'Data from Node.js backend' });
