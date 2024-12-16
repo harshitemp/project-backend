@@ -1,43 +1,76 @@
-// controllers/trainingController.js
-const TrainingSession = require('../models/TrainingSession');
+// controllers/emailController.js
+const nodemailer = require("nodemailer");
+const User = require("../models/userModel");
+require("dotenv").config();
 
-// Create a new training session
-exports.createTrainingSession = async (req, res) => {
+// Create a transporter for nodemailer
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+    },
+});
+
+// Function to send email notification
+const sendMail = async (recipients, sessionDetails) => {
+    if (recipients.length === 0) {
+        console.error("No recipients to send the email to.");
+        return;
+    }
+
+    const mailOptions = {
+        from: {
+            name: "Your Organization",
+            address: process.env.EMAIL_USER,
+        },
+        to: recipients.join(","), // Join emails into a single string
+        subject: "New Training Session Notification",
+        text: `A new training session has been scheduled.\n\nDetails:\n${sessionDetails}`,
+        html: `<p>A new training session has been scheduled.</p><p><b>Details:</b></p><p>${sessionDetails}</p>`,
+    };
+
     try {
-        const newSession = new TrainingSession(req.body);
-        await newSession.save();
-        res.status(201).json({ message: 'Training session created successfully', newSession });
-    } catch (err) {
-        res.status(400).json({ error: err.message });
+        await transporter.sendMail(mailOptions);
+        console.log("Email has been sent to all recipients");
+    } catch (error) {
+        console.error("Error sending email:", error);
     }
 };
 
-// Get all training sessions
-exports.getAllTrainingSessions = async (req, res) => {
+exports.notifyRegisteredUsers = async (req, res) => {
     try {
-        const sessions = await TrainingSession.find();
-        res.status(200).json(sessions);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-};
+        // Retrieve all registered users
+        const users = await User.find({ role: { $in: ["student", "university", "company", "coordinator"] } });
+        
+        console.log("Found users:", users); // Debugging line
 
-// Update a training session
-exports.updateTrainingSession = async (req, res) => {
-    try {
-        const updatedSession = await TrainingSession.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        res.status(200).json({ message: 'Training session updated successfully', updatedSession });
-    } catch (err) {
-        res.status(400).json({ error: err.message });
-    }
-};
+        // Extract emails from the retrieved users
+        const recipients = users.map(user => user.email).filter(email => email); // Filter out undefined or empty emails
+        console.log("Recipients:", recipients); // Debugging line
 
-// Delete a training session
-exports.deleteTrainingSession = async (req, res) => {
-    try {
-        await TrainingSession.findByIdAndDelete(req.params.id);
-        res.status(200).json({ message: 'Training session deleted successfully' });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+        if (recipients.length === 0) {
+            return res.status(400).json({ error: "No registered users found to send email to." });
+        }
+
+        // Define the session details
+        const sessionDetails = `
+            Title: ${req.body.title}
+            Date: ${req.body.date}
+            Time: ${req.body.time}
+            Venue: ${req.body.venue}
+            Trainer: ${req.body.trainer}
+        `;
+
+        // Send email to all registered users
+        await sendMail(recipients, sessionDetails);
+
+        res.status(200).json({ message: "Notification sent to all registered users" });
+    } catch (error) {
+        console.error("Error in notifyRegisteredUsers:", error);
+        res.status(500).json({ error: error.message });
     }
 };

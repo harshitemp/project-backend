@@ -1,27 +1,57 @@
-// controllers/cv.controller.js
-const CV = require('../models/cv.model');
+// controllers/cvController.js
+const Cv = require('../models/cv.model');
 
-// Create or update a CV
-exports.uploadCV = async (req, res) => {
+// Create a new CV
+exports.createCv = async (req, res) => {
   try {
-    const cvData = req.body;
-    if (req.file) {
-      cvData.imageUrl = req.file.path; // Assuming you're storing the image path
-    }
-    const cv = new CV(cvData);
-    await cv.save();
-    res.status(201).json({ message: 'CV uploaded successfully', cv });
+    const cv = new Cv(req.body);
+    const savedCv = await cv.save();
+    res.status(201).json(savedCv);
   } catch (error) {
-    res.status(500).json({ message: 'Error uploading CV', error });
+    res.status(400).json({ message: error.message });
   }
 };
 
 // Get all CVs
-exports.getCVs = async (req, res) => {
+exports.getAllCvs = async (req, res) => {
   try {
-    const cvs = await CV.find();
-    res.status(200).json(cvs);
+    const cvs = await Cv.find();
+    res.json(cvs);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching CVs', error });
+    res.status(500).json({ message: error.message });
   }
+};
+
+// Get a single CV by ID
+exports.getCvById = async (req, res) => {
+  try {
+    const cv = await Cv.findById(req.params.id);
+    if (!cv) return res.status(404).json({ message: 'CV not found' });
+    res.json(cv);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Update a CV by ID
+exports.updateCv = async (req, res) => {
+  try {
+    const updatedCv = await Cv.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedCv) return res.status(404).json({ message: 'CV not found' });
+    res.json(updatedCv);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// Delete a CV by ID
+exports.deleteCv = async (req, res) => {
+  try {
+    const deletedCv = await Cv.findByIdAndDelete(req.params.id);
+    if (!deletedCv) return res.status(404).json({ message: 'CV not found' });
+    res.json({ message: 'CV deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+
 };

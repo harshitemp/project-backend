@@ -1,29 +1,35 @@
-// controllers/placementController.js
 const Placement = require('../models/Placement');
-const xlsx = require('xlsx');
+const XLSX = require('xlsx');
+const fs = require('fs');
 
-// Upload and parse Excel file
 exports.uploadExcel = async (req, res) => {
     try {
-        const workbook = xlsx.readFile(req.file.path);
+        const filePath = req.file.path;
+        const workbook = XLSX.readFile(filePath);
         const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const jsonData = xlsx.utils.sheet_to_json(worksheet);
+        const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
-        // Save data to the database
-        const placements = await Placement.insertMany(jsonData);
-        res.status(201).json({ message: 'Data uploaded successfully', placements });
-    } catch (err) {
-        res.status(400).json({ error: err.message });
+        const placements = sheetData.map(data => ({
+            name: data.Name,
+            registrationNumber: data.RegistrationNumber,
+            stream: data.Stream,
+            status: data.Status
+        }));
+
+        await Placement.insertMany(placements);
+        fs.unlinkSync(filePath); // Remove file after processing
+
+        res.status(200).json({ message: 'File uploaded and data saved successfully!' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 };
 
-// Get all placements
-exports.getAllPlacements = async (req, res) => {
+exports.getAllPlacements = async (_req, res) => {
     try {
         const placements = await Placement.find();
         res.status(200).json(placements);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 };

@@ -3,9 +3,9 @@ const router = express.Router();
 const questionController = require('../controllers/questionController');
 
 // Get all questions
-router.get('/footerq', questionController.getAllQuestions);
+router.get('/questions', questionController.getAllQuestions);
 
 // Add a new question
-router.post('/footerq', questionController.addQuestion);
+router.post('/questions', questionController.addQuestion);
 
 module.exports = router;
