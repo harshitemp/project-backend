@@ -6,6 +6,7 @@ exports.getAllQuestions = async (req, res) => {
     const questions = await Question.find();
     res.status(200).json(questions); // Return a 200 status for successful retrieval
   } catch (error) {
+    console.error('Error fetching questions:', error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -25,6 +26,7 @@ exports.addQuestion = async (req, res) => {
     const savedQuestion = await newQuestion.save();
     res.status(201).json(savedQuestion);
   } catch (error) {
+    console.error('Error saving question:', error);
     res.status(400).json({ message: error.message });
   }
 };

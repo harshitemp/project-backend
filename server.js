@@ -19,6 +19,7 @@ const footerRoutes = require('./routes/footerRoutes');
 const questionRoutes = require('./routes/questionRoutes');
 const loginr = require('./routes/loginr'); // Ensure this matches the actual filename
 const statisticsRoutes=require('./routes/statisticsRoutes');
+const emailRoutes=require('./routes/emailRoutes');
 const app = express();
 app.use(cors({ origin: 'http://localhost:4200' })); // If your Angular app is running on port 4200
 
@@ -48,6 +49,7 @@ app.use('/api', footerRoutes);
 app.use('/api', questionRoutes);
 app.use('/api', loginr); // Use the correct variable name here
 app.use('/api', statisticsRoutes);
+app.use('/api', emailRoutes);
 // Adding the new /api/data routes
 app.get('/api/data', (req, res) => {
   res.json({ message: 'Data from Node.js backend' });

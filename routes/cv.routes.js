@@ -1,17 +1,15 @@
-// routes/cv.routes.js
+// routes/cvRoutes.js
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
 const cvController = require('../controllers/cv.controller');
 
-// Set up Multer for file uploads
-const storage = multer({ dest: 'uploads/' }); // Define the destination folder for uploads
-const upload = multer({ storage });
+// Routes
+router.post('/cvs', cvController.createCv);
+router.get('/cvs', cvController.getAllCvs);
+router.get('/cvs/:id', cvController.getCvById);
+router.put('/cvs/:id', cvController.updateCv);
+router.delete('/cvs/:id', cvController.deleteCv);
 
-// Route to upload a CV
-router.post('/upload', upload.single('cvFile'), cvController.uploadCV);
 
-// Route to get all CVs
-router.get('/upload', cvController.getCVs);
 
 module.exports = router;

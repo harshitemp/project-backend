@@ -1,16 +1,23 @@
-// models/cv.model.js
+// models/Cv.js
 const mongoose = require('mongoose');
 
-const cvSchema = new mongoose.Schema({
+const CvSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  skills: [String],
+  technical: String,
+  laboratory: String,
+  bioinformatic: String,
   projects: [String],
+  domainExpertise: String,
   education: [String],
-  socialMedia: [String],
-  languages: [String],
-  summary: { type: String },
-  imageUrl: { type: String }, // For storing the uploaded image URL
-  createdAt: { type: Date, default: Date.now }
+  objective: String,
+  email: { type: String, required: true },
+  phone: { type: String, required: true },
+  linkedin: String,
+  github: String,
+  internship: String,
+  achievements: [String],
+  interests: String,
+  uploadedImageUrl: String
 });
 
-module.exports = mongoose.model('CV', cvSchema);
+module.exports = mongoose.model('Cv', CvSchema);
