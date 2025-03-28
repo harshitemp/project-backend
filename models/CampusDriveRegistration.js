@@ -9,6 +9,10 @@ const CampusDriveRegistrationSchema = new mongoose.Schema({
     campuses: {
         vizianagaram: { type: Boolean, default: false },
         bhubaneswar: { type: Boolean, default: false },
+        parlakemundi: { type: Boolean, default: false },
+        rayagada: { type: Boolean, default: false },
+        balasore: { type: Boolean, default: false },
+        chatrapur: { type: Boolean, default: false },
     },
 });
 
