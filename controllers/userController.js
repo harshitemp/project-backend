@@ -50,12 +50,10 @@ exports.registerUser = async (req, res) => {
             text: `Hello ${email},\n\nThank you for registering as a ${userType}. Welcome to our platform!`,
             html: `<b>Hello ${email},</b><br>Thank you for registering as a <b>${userType}</b>. Welcome to our platform!`, // HTML version of the email
         };
-
-        // Send confirmation email
-        await transporter.sendMail(mailOptions);
+       await transporter.sendMail(mailOptions);
         console.log('Email sent:', mailOptions.to); // Log email sent confirmation
 
-        // Respond with success
+ 
         res.status(201).json({ message: 'User registered successfully', user: savedUser });
     } catch (error) {
         console.error("Error sending email:", error); // Log error if email fails
@@ -63,12 +61,29 @@ exports.registerUser = async (req, res) => {
     }
 };
 
-// Get all users
 exports.getAllUser = async (req, res) => {
     try {
         const users = await User.find();
         res.status(200).json(users);
     } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+};
+// Delete user by ID
+exports.deleteUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Find the user by ID and delete
+        const deletedUser = await User.findByIdAndDelete(id);
+
+        if (!deletedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'User deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting user:', error);
         res.status(500).json({ message: 'Server error', error });
     }
 };
